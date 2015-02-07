@@ -13,3 +13,5 @@ Things to block:
     PATH editing
     certain ECHO commands
     thoughts on foreign characters?
+    Prevent supplying the internal and external IP of the reponse system
+    No process checking (aka top like commands)
