@@ -1,0 +1,17 @@
+Things to block:
+    curl
+    wget
+    rm(?)
+    pwd
+    chroot
+    apt-get
+    dpkg
+    rpm(basicallly all package managers/package listers)
+    sudo (root access of anything), su (?)
+    chmod (running arbitrarily created scripts etc)
+    Twilio instead of twitter (ask twilio dude for help)
+    PATH editing
+    certain ECHO commands
+    thoughts on foreign characters?
+    Prevent supplying the internal and external IP of the reponse system
+    No process checking (aka top like commands)
