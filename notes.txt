@@ -1,0 +1,15 @@
+Things to block:
+    curl
+    wget
+    rm(?)
+    pwd
+    chroot
+    apt-get
+    dpkg
+    rpm(basicallly all package managers/package listers)
+    sudo (root access of anything), su (?)
+    chmod (running arbitrarily created scripts etc)
+    Twilio instead of twitter (ask twilio dude for help)
+    PATH editing
+    certain ECHO commands
+    thoughts on foreign characters?
