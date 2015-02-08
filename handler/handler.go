@@ -5,15 +5,15 @@
 package TwitHandler
 
 import(
-    "TwitterShell/main"
+    "TwitterShell/twilio"
 )
 
 //Normally blocking sterlization main function
-func Sterlhand(toProcess chan<- TwilData, fromTwilio <-chan TwilData) {
+func Sterlhand(toProcess chan<- Twilio.TwilData, fromTwilio <-chan Twilio.TwilData) {
     toOperate := <-fromTwilio
-    cleanedMessage := toOperate.inMessage
+    cleanedMessage := toOperate.InMessage
     cleanMessage(&cleanedMessage) //clean the message here
-    toOperate.inMessage = cleanedMessage
+    toOperate.InMessage = cleanedMessage
     toProcess <- toOperate
 
 //process against known unacceptable commands (? gut out appended commands (such as with && and |?)

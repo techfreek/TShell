@@ -5,8 +5,7 @@ import (
 	"os"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	//"net/url"
+    "net/http"
 )
 
 type Cred struct {
