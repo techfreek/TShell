@@ -1,19 +1,34 @@
 package Twilio
 
 import (
-	"github.com/sfreiberg/gotwilio"
 	"os"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
 )
 
-var creds struct {
+type cred struct {
 	Sid string
 	Auth string
+} 
+
+type Twil struct {
+	Sid string
+	Auth string
+	BaseURL string
+	HTTPClient *http.client
+}
+
+type TwilData struct {
+	PhoneNum string
+	inMessage string
+	outMessage string
 }
 
 var LeftShark = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
 var From = "+15012297152"
+var apiURL = "https://api.twilio.com/2010-04-01"
 
 func Initialize() {
 	credFile, err := os.Open("twilioAPI.json")
@@ -34,6 +49,4 @@ func Initialize() {
 	message := "Hello world!"
 
 	twilio.SendMMS(From, to, message, LeftShark, "", "")
-
-	//fmt.Printf("%s %s" credentials.Sid, credentials.Auth)
 }
