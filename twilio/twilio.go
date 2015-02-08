@@ -8,7 +8,7 @@ import (
     "net/http"
     "net/url"
     "strings"
-    //"io/ioutil"
+    "io"
 )
 
 type Cred struct {
@@ -22,15 +22,44 @@ type Twil struct {
 }
 
 type TwilData struct {
-	PhoneNum, InMessage, OutMessage, MediaURL string
+	PhoneNum string
+	InMessage string
+	OutMessage string
+	MediaURL string
 	Error bool
 }
+
+type twilText struct {
+	asid string 			`json:"account_sid"`
+	version string 			`json:"api_version"`
+	body string 			`json:"body"`
+	errcode string 			`json:"error_code""`
+	errmsg string 			`json:"error_message"`
+	segments string 		`json:"num_segments"`
+	medias string 			`json:"num_media"`
+	created string 			`json:"date_created"`
+	sent string 			`json:"date_sent"`
+	updated string 			`json:"date_updated"`
+	direction string 		`json:"direction"`
+	from string 			`json:"from"`
+	price string 			`json:"string"`
+	sid string 				`json:"sid"`
+	status string 			`json:"status"`
+	to string 				`json:"to"`
+	uri string 				`json:"uri"`
+}
+
 
 var LeftShark = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
 var From = "+15012297152"
 var apiURL = "https://api.twilio.com/2010-04-01/"
+var processing = make(chan TwilData)
 
-func Initialize() (error, *Twil) {
+func Initialize(proc chan TwilData) (error, *Twil) {
+	//Set the channel where texts are sent to be processed
+	processing = proc;
+
+	//Initialize a struct
 	creds := Cred{}
 
 	//Open Credentials file
@@ -49,36 +78,18 @@ func Initialize() (error, *Twil) {
 	//Create struct
 	twil := Twil{creds, http.DefaultClient}
 
+
+	//start server so we can get texts
+	mux := http.NewServeMux()
+	mux.HandleFunc("/command", gotText)
+	http.ListenAndServe(":8000", mux)
+
+
 	return nil, &twil
-
-}
-
-func (twil *Twil) GetTexts() (error, []TwilData) {
-	resp, err := twil.HTTP.Get(apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json")
-	
-	if err != nil {
-		fmt.Println("Error requesting texts")
-		return err, nil
-	} else {
-		defer resp.Body.Close();
-		//var contents string
-		//jsonParser := json.NewDecoder(resp.Body);
-		//jsonParser.Decode(&contents);
-		
-		//contents, err := ioutil.ReadAll(resp.Body);
-		if err != nil {
-			fmt.Println("Error reading body")
-			return err, nil
-		}
-
-		//fmt.Println("Response: ");	
-		//fmt.Println(contents);
-		return err, nil	
-	}
 }
 
 func (twil *Twil) SendText(data TwilData) {
-	values := Valuify(data, twil)
+	values := Valueify(data, twil)
 	url := apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json"
 	fmt.Println("Url: " + url);
 	
@@ -109,7 +120,7 @@ func (twil *Twil) SendText(data TwilData) {
 
 }
 
-func Valuify(data TwilData, twil *Twil) url.Values {
+func Valueify(data TwilData, twil *Twil) url.Values {
 	form := url.Values{}
 
 	form.Set("From", From)
@@ -122,4 +133,31 @@ func Valuify(data TwilData, twil *Twil) url.Values {
 	fmt.Println(form)
 
 	return form
+}
+
+func gotText(res http.ResponseWriter, req *http.Request) {
+	defer io.WriteString(res, "ACK")
+
+	//Create a decoder for the request
+	decoder := json.NewDecoder(req.Body)
+
+	//instantiate empty TwilText
+	text := twilText{}
+
+	if err := decoder.Decode(&text); err != nil {
+		fmt.Println("Error parsing text")
+		return
+	}
+
+	fmt.Println("twilText: ");
+	fmt.Println(text);
+
+	msg := TwilData{
+		text.to,
+		text.body,
+		"", "",
+		false,
+	}
+
+	processing <- msg
 }

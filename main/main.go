@@ -23,6 +23,8 @@ func main() {
 
     fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "Go Cougs!"}
 
+    //fmt.Println(fakeData)
+
     hand := make(chan Twilio.TwilData, 5)
     demo := make(chan Twilio.TwilData, 5)
     final := make(chan Twilio.TwilData, 5)
@@ -35,10 +37,12 @@ func main() {
     
     fmt.Println(<-final)
 
+    //anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg", false}
+
+    Twilio.Initialize(demo)
+   //twil.SendText(anotherFake);
     //anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"}
 
     //_, twil := Twilio.Initialize()
     //twil.SendText(anotherFake);
-
 }
-
