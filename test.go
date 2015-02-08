@@ -8,53 +8,43 @@ import (
 )
 
 type twilText struct {
-	asid string				`json:"account_sid"`
-	version string 			`json:"api_version"`
-	body string 			`json:"body"`
-	errcode string 			`json:"error_code""`
-	errmsg string 			`json:"error_message"`
-	segments string 		`json:"num_segments"`
-	medias string 			`json:"num_media"`
-	created string 			`json:"date_created"`
-	sent string 			`json:"date_sent"`
-	updated string 			`json:"date_updated"`
-	direction string 		`json:"direction"`
-	from string 			`json:"from"`
-	price string 			`json:"string"`
-	sid string 				`json:"sid"`
-	status string 			`json:"status"`
-	to string 				`json:"to"`
-	uri string 				`json:"uri"`
+	MessageSid string 		`json:"MessageSid"`
+	SmsSid string 			`json:"SmsSid"`
+	AccountSid string 		`json:"AccountSid"`
+	From string 			`json:"From"`
+	To string 				`json:"To"`
+	Body string 			`json:"Body"`
+	NumMedia string 		`json:"NumMedia"`
 }
 
 func main() {
 	url := "http://localhost:8000/command"
 
 	text := twilText{
-		asid: "", 
-		version: "",
+		asid: "1", 
+		version: "2",
 		body: "LeftShark",
-		errcode: "", 
-		errmsg: "", 
-		segments: "",
-		medias: "", 
-		created: "",
-		sent: "",
-		updated: "",
-		direction: "",
+		errcode: "3", 
+		errmsg: "4", 
+		segments: "5",
+		medias: "6", 
+		created: "7",
+		sent: "8",
+		updated: "9",
+		direction: "10",
 		from: "+1234567890",
-		price: "",
-		sid: "",
-		status: "",
+		price: "11",
+		sid: "12",
+		status: "13",
 		to: "+14254175393",
-		uri: "",
+		uri: "14",
 	}
 
 	parsedText, _ := json.Marshal(text)
 
 	var str = []byte(string(parsedText))
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(str))
+	req, err := http.NewRequest("GET", url, bytes.NewBuffer(str))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}

@@ -5,10 +5,10 @@ import (
 	"os"
 	"encoding/json"
 	"fmt"
-    "net/http"
-    "net/url"
-    "strings"
-    "io"
+	"net/http"
+	"net/url"
+	"strings"
+	"io"
 )
 
 type Cred struct {
@@ -30,23 +30,13 @@ type TwilData struct {
 }
 
 type twilText struct {
-	asid string 			`json:"account_sid"`
-	version string 			`json:"api_version"`
-	body string 			`json:"body"`
-	errcode string 			`json:"error_code""`
-	errmsg string 			`json:"error_message"`
-	segments string 		`json:"num_segments"`
-	medias string 			`json:"num_media"`
-	created string 			`json:"date_created"`
-	sent string 			`json:"date_sent"`
-	updated string 			`json:"date_updated"`
-	direction string 		`json:"direction"`
-	from string 			`json:"from"`
-	price string 			`json:"string"`
-	sid string 				`json:"sid"`
-	status string 			`json:"status"`
-	to string 				`json:"to"`
-	uri string 				`json:"uri"`
+	MessageSid string 		`json:"MessageSid"`
+	SmsSid string 			`json:"SmsSid"`
+	AccountSid string 		`json:"AccountSid"`
+	From string 			`json:"From"`
+	To string 				`json:"To"`
+	Body string 			`json:"Body"`
+	NumMedia string 		`json:"NumMedia"`
 }
 
 
@@ -81,7 +71,7 @@ func Initialize(proc chan TwilData) (error, *Twil) {
 
 	//start server so we can get texts
 	mux := http.NewServeMux()
-	mux.HandleFunc("/command", gotText)
+	mux.HandleFunc("/", gotText)
 	http.ListenAndServe(":8000", mux)
 
 
@@ -145,19 +135,30 @@ func gotText(res http.ResponseWriter, req *http.Request) {
 	text := twilText{}
 
 	if err := decoder.Decode(&text); err != nil {
-		fmt.Println("Error parsing text")
-		return
+		if err != nil {
+			fmt.Printf("Error parsing text: %v", err)
+		}
 	}
 
-	fmt.Println("twilText: ");
+	parsedText, err := json.Marshal(req.Form)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+	}
+
+	fmt.Println(string(parsedText))
+
+	/*fmt.Printf("twilText: %s %s %s\n", text.To, text.Body, text.From);
 	fmt.Println(text);
 
 	msg := TwilData{
-		text.to,
-		text.body,
-		"", "",
-		false,
+		PhoneNum: text.To,
+		InMessage: text.Body,
+		OutMessage: "",
+		MediaURL: "",
+		Error: false,
 	}
 
-	processing <- msg
+	fmt.Printf("msg: %s %s %s %s %t\n", msg.PhoneNum, msg.InMessage, msg.OutMessage, msg.MediaURL, msg.Error)*/
+
+	//processing <- msg
 }
