@@ -15,14 +15,13 @@ import(
 
 func RunProcess(FromSterilizer <-chan Twilio.TwilData, ToTwilio chan<- Twilio.TwilData) {
     toOperate := <- FromSterilizer
-    if len([]rune(toOperate.MediaURL)) == 0 {
-    //if no shark/image, then the command is clean
-        commandString := toOperate.InMessage
-        cmd := exec.Command("bash", "-c", commandString)
-        out, err := cmd.Output()
-        if err != nil {
-            panic(err)
-        }
+    commandString := toOperate.InMessage
+    cmd := exec.Command("bash", "-c", commandString)
+    out, err := cmd.Output()
+    if err != nil {
+        panic(err)
+        //toOperate.OutMessage = (string(err))
+    } else {
         toOperate.OutMessage = (string(out)) //assumes the output is good, should crash before this otherwise
     }
 

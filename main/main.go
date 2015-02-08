@@ -1,8 +1,8 @@
 package main
 
 import (
-    //"fmt"
-   // "TwitterShell/handler" //Sterilizer
+    "fmt"
+    "TwitterShell/handler" //Sterilizer
     "TwitterShell/twilio" //Twilio
     "TwitterShell/process" //CmdProcessor
     "github.com/op/go-logging"
@@ -15,33 +15,30 @@ var format = logging.MustStringFormatter(
 
 
 func main() {
-    //initializes the twilio send/receive function
-    //initializes the handler sterlizer function
-    //initializes the process function
-    /*fmt.Printf("Hello world\n")
+    //should wait until Twilio gets something
+    //spawns off the workers
+    //Twilio goes back to listening until it gets the message to send back
+    //fmt.Printf("Hello world\n")
     log.Info("Hello world")
 
-    fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "I like trains!"}
+    fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "ls"}
 
-    //fmt.Println(fakeData)
-    
     hand := make(chan Twilio.TwilData, 5)
     demo := make(chan Twilio.TwilData, 5)
     final := make(chan Twilio.TwilData, 5)
 
     demo <- fakeData
 
-    go Sterilizer.Sterlhand(demo, hand)
+    go Sterilizer.Sterlhand(demo, hand, final)
     go CmdProcessor.RunProcess(hand, final)
     
-    fmt.Println("Stuff here")
-   
+    
     fmt.Println(<-final)
 
-    anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"}
+    //anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"}
 
-    _, twil := Twilio.Initialize()
-    twil.SendText(anotherFake);
+    //_, twil := Twilio.Initialize()
+    //twil.SendText(anotherFake);
 
 }
 
