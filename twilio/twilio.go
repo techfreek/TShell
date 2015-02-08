@@ -5,11 +5,10 @@ import (
 	"os"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"net/url"
+    "net/http"
 )
 
-type cred struct {
+type creds struct {
 	Sid string
 	Auth string
 } 
@@ -18,7 +17,6 @@ type Twil struct {
 	Sid string
 	Auth string
 	BaseURL string
-	HTTPClient *http.client
 }
 
 type TwilData struct {

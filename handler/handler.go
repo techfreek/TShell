@@ -4,9 +4,9 @@
 
 package TwitHandler
 
-import(
-    "TwitterShell/main"
-)
+//import(
+//    "TwitterShell/main"
+//)
 
 //Normally blocking sterlization main function
 func Sterlhand(toProcess chan<- TwilData, fromTwilio <-chan TwilData) {
