@@ -5,10 +5,10 @@ import (
 	"os"
 	"encoding/json"
 	"fmt"
-    "net/http"
+    //"net/http"
 )
 
-type creds struct {
+type Creds struct {
 	Sid string
 	Auth string
 } 
@@ -30,6 +30,8 @@ var From = "+15012297152"
 var apiURL = "https://api.twilio.com/2010-04-01"
 
 func Initialize() {
+	creds := Creds{};
+
 	credFile, err := os.Open("twilioAPI.json")
 	if err != nil {
 		fmt.Println("Error opening file")
@@ -41,11 +43,11 @@ func Initialize() {
 	}
 	fmt.Printf("%+v", creds);
 
-	twilio := gotwilio.NewTwilioClient(creds.Sid, creds.Auth)
+	//twilio := gotwilio.NewTwilioClient(creds.Sid, creds.Auth)
 
-	to := "+14254175393"
+	//to := "+14254175393"
 
-	message := "Hello world!"
+	//message := "Hello world!"
 
-	twilio.SendMMS(From, to, message, LeftShark, "", "")
+	//twilio.SendMMS(From, to, message, LeftShark, "", "")
 }
