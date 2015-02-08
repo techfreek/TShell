@@ -2,18 +2,18 @@
 //Accepts a map from the Twilio input/output handler that contains the submitting number/user [should be occupied],
 //      the message from the user to be sterlized, and an empty response storage element
 
-package TwitHandler
+package Sterilizer
 
-//import(
-//    "TwitterShell/main"
-//)
+import(
+    "TwitterShell/twilio"
+)
 
 //Normally blocking sterlization main function
-func Sterlhand(toProcess chan<- TwilData, fromTwilio <-chan TwilData) {
-    toOperate := <-fromTwilio
-    cleanedMessage := toOperate.inMessage
+func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilData) {
+    toOperate := <-fromTwilio 
+    cleanedMessage := toOperate.InMessage
     cleanMessage(&cleanedMessage) //clean the message here
-    toOperate.inMessage = cleanedMessage
+    toOperate.InMessage = cleanedMessage
     toProcess <- toOperate
 
 //process against known unacceptable commands (? gut out appended commands (such as with && and |?)

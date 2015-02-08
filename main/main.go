@@ -2,7 +2,8 @@ package main
 
 import (
     "fmt"
-    //"TwitterShell/handler" //this would be used as TwitHandler
+    "TwitterShell/handler" //Sterilizer
+    "TwitterShell/twilio" //Twilio
     "github.com/op/go-logging"
 )
 
@@ -21,14 +22,18 @@ func main() {
     fmt.Printf("Hello world\n")
     log.Info("Hello world")
 
-    //fakeData := Datacontainer{phoneNum: "555-555-5555", inMessage: "I like trains!"}
-    
-    //hand := make(chan Datacontainer)
-    //demo := make(chan Datacontainer)
+    fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "I like trains!"}
 
-    //TwitHandler.Sterlhand(demo, hand)
+    fmt.Println(fakeData)
     
-    //fmt.Println(<-demo)
+    hand := make(chan Twilio.TwilData, 5)
+    demo := make(chan Twilio.TwilData, 5)
+
+    demo <- fakeData
+
+    go Sterilizer.Sterlhand(demo, hand)
+   
+    fmt.Println(<-hand)
 
 }
 

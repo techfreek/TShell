@@ -21,8 +21,8 @@ type Twil struct {
 
 type TwilData struct {
 	PhoneNum string
-	inMessage string
-	outMessage string
+	InMessage string
+	OutMessage string
 }
 
 var LeftShark = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
