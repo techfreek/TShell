@@ -8,28 +8,32 @@
 package Sterilizer
 
 import(
-    //"fmt"
+    "fmt"
     "TwitterShell/twilio"
     "strings"
 )
 
-var no = [11]string {"curl", "wget", "rm", "pwd", "chroot", "apt-get", "dpkg", "rmp", "sudo", "su", "chmod"}
+var no = [11]string {"curl", "wget", "rm", "passwd", "chroot", "apt-get", "dpkg", "rmp", "sudo", "su", "chmod"}
 
 //Normally blocking sterlization main function
 func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilData, toTwilio chan<-Twilio.TwilData) {
-    toOperate := <-fromTwilio 
-    cleanedMessage := toOperate.InMessage
-    if !cleanMessage(cleanedMessage) || checkSpecial(cleanedMessage) {
-        if strings.Contains("Go Cougs!", cleanedMessage) {
-            toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg" //sets shark
-        } else {
-            toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
-        }
-        toTwilio <- toOperate //unsafe message, return to send back, no chance of running command
-    } else {
-    toOperate.InMessage = cleanedMessage
-    toProcess <- toOperate
-    }
+    for toOperate :=  range fromTwilio {
+        fmt.Printf("toOperate: %v\n", toOperate)
+	    cleanedMessage := toOperate.InMessage
+	    if !cleanMessage(cleanedMessage) || checkSpecial(cleanedMessage) {
+	        if strings.Contains("Go Cougs!", cleanedMessage) {
+	            toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg" //sets shark
+	        } else {
+	            toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
+	        }
+	        fmt.Printf("toTwilio <- %v \n", toOperate)
+	        toTwilio <- toOperate //unsafe message, return to send back, no chance of running command
+	    } else {
+		    toOperate.InMessage = cleanedMessage
+		    toProcess <- toOperate
+	    
+	    }
+	}
 
 //process against known unacceptable commands (? gut out appended commands (such as with && and |?)
 }

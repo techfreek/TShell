@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"io"
+	//"io"
 )
 
 type Cred struct {
@@ -16,7 +16,7 @@ type Cred struct {
 	Auth string
 } 
 
-type Twil struct {
+var twil struct {
 	Creds Cred
 	HTTP *http.Client
 }
@@ -32,9 +32,9 @@ type TwilData struct {
 var LeftShark = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
 var From = "+15012297152"
 var apiURL = "https://api.twilio.com/2010-04-01/"
-var processing = make(chan TwilData)
+var processing chan TwilData
 
-func Initialize(proc chan TwilData) (error, *Twil) {
+func Initialize(proc chan TwilData) error {
 	//Set the channel where texts are sent to be processed
 	processing = proc;
 
@@ -45,72 +45,76 @@ func Initialize(proc chan TwilData) (error, *Twil) {
 	credFile, err := os.Open("twilioAPI.json")
 	if err != nil {
 		fmt.Println("Error opening file")
-		return err, nil
+		return err
 	}
 	// parse credentials
 	jsonParser := json.NewDecoder(credFile)
 	if err = jsonParser.Decode(&creds); err != nil {
 		fmt.Println("Error parsing file")
-		return err, nil
+		return err
 	}
 
 	//Create struct
-	twil := Twil{creds, http.DefaultClient}
+	twil.Creds = creds;
+	twil.HTTP = http.DefaultClient;
 
-	return nil, &twil
+	return nil
 }
 
-func (twil *Twil) SendText(data TwilData) {
-	fmt.Println("Sending text");
-	values := Valueify(data, twil)
-	url := apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json"
-	fmt.Println("Url: " + url);
-	
+func SendText(toTwilio <-chan TwilData) {
+	fmt.Println("SendText()")
+	for data := range toTwilio {	
+		fmt.Println("Sending text")
+		values := Valueify(data)
+		encodedValues := values.Encode()
+		uri := apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json?" + encodedValues
+		fmt.Println("Uri: " + uri);
+		
 
-	req, err := http.NewRequest("POST", url, strings.NewReader(values.Encode()))
+		req, err := http.NewRequest("POST", uri, strings.NewReader(values.Encode()))
 
-	fmt.Println("Values: " + values.Encode())
+		fmt.Println("Values: " + values.Encode())
 
-	if err != nil {
-		fmt.Println("Error creating request");
-		return
+		if err != nil {
+			fmt.Println("Error creating request");
+			continue
+		}
+
+		req.SetBasicAuth(twil.Creds.Sid, twil.Creds.Auth)
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+		fmt.Printf("Sending text: %v\n", data)
+		_, err = twil.HTTP.Do(req)
+		fmt.Printf("Text sent: %s\n", data.PhoneNum)
+
+		if err != nil {
+			fmt.Println("Error sending request: ")
+			fmt.Println(err)
+			continue
+		}
 	}
-
-	req.SetBasicAuth(twil.Creds.Sid, twil.Creds.Auth)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	fmt.Println("Sending text")
-	_, err = twil.HTTP.Do(req)
-	fmt.Println("Text sent")
-
-	if err != nil {
-		fmt.Println("Error sending request: ")
-		fmt.Println(err)
-		return
-	}
-
-	return
 
 }
 
-func Valueify(data TwilData, twil *Twil) url.Values {
+func Valueify(data TwilData) url.Values {
 	form := url.Values{}
 
 	form.Set("From", From)
 	form.Set("To", data.PhoneNum)
-	form.Set("Body", data.OutMessage)
-	form.Set("MediaUrl", data.MediaURL)
+	form.Set("Body", data.OutMessage) 
+
+	if data.MediaURL != "" {
+		form.Set("MediaUrl", data.MediaURL)	
+	}
+	
 	form.Set("ApplicationSid", twil.Creds.Sid)
 
-	fmt.Println("Values: ")
-	fmt.Println(form)
+	fmt.Printf("Values: %v\n", form)
 
 	return form
 }
 
 func GotText(res http.ResponseWriter, req *http.Request) {
-	defer io.WriteString(res, "ACK")
-
 	msg := TwilData{
 		PhoneNum: req.FormValue("From"),
 		InMessage: req.FormValue("Body"),
@@ -119,7 +123,6 @@ func GotText(res http.ResponseWriter, req *http.Request) {
 		Error: false,
 	}
 
-	fmt.Println(msg)
-
+	fmt.Printf("processing <- %v", msg)
 	processing <- msg
 }

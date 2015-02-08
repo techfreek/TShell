@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"TwitterShell/handler" //Sterilizer
 	"TwitterShell/twilio" //Twilio
 	"TwitterShell/process" //CmdProcessor
@@ -22,7 +22,7 @@ func main() {
 	//fmt.Printf("Hello world\n")
 	log.Info("Hello world")
 
-	fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "Go Cougs!"}
+	//fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "Go Cougs!"}
 
 	//fmt.Println(fakeData)
 
@@ -30,17 +30,18 @@ func main() {
 	demo := make(chan Twilio.TwilData, 5)
 	final := make(chan Twilio.TwilData, 5)
 
-	_, twil := Twilio.Initialize(demo)
-	demo <- fakeData
+	Twilio.Initialize(demo)
+	//demo <- fakeData
 
 	go Sterilizer.Sterlhand(demo, hand, final)
 	go CmdProcessor.RunProcess(hand, final)
+	go Twilio.SendText(final)
 	
 	
-	//fmt.Println(<-final)
+	
 
 	//start server so we can get texts
 	var mux = http.NewServeMux()
 	mux.HandleFunc("/", Twilio.GotText)
-	http.ListenAndServe(":8000", mux)    
+	http.ListenAndServe(":8000", mux)
 }
