@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "TwitterShell/handler" //this would be used as TwitHandler
+    "TwitterShell/twilio"
 )
 
 var Datacontainer struct {
@@ -17,7 +18,7 @@ func main() {
     //initializes the twilio send/receive function
     //initializes the handler sterlizer function
     //initializes the process function
-    fmt.Printf("Hello world\n")
+    /*fmt.Printf("Hello world\n")
 
     fakeData := Datacontainer{phoneNum: "555-555-5555", inMessage: "I like trains!"}
     
@@ -26,7 +27,10 @@ func main() {
 
     TwitHandler.Sterlhand(demo, hand)
     
-    fmt.Println(<-demo)
+    fmt.Println(<-demo)*/
+
+    _, twil := Twilio.Initialize()
+   twil.GetTexts();
 
 }
 

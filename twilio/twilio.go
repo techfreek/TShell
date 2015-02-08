@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
+	//"net/url"
 )
 
 type Cred struct {
@@ -15,41 +15,48 @@ type Cred struct {
 } 
 
 type Twil struct {
-	Sid string
-	Auth string
-	BaseURL string
-	HTTPClient *http.client
+	Creds Cred
+	HTTP *http.Client
 }
 
 type TwilData struct {
-	PhoneNum string
-	inMessage string
-	outMessage string
+	PhoneNum, InMessage, OutMessage, MediaURL string
 }
 
 var LeftShark = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
 var From = "+15012297152"
-var apiURL = "https://api.twilio.com/2010-04-01"
+var apiURL = "https://api.twilio.com/2010-04-01/"
 
-func Initialize() {
-	creds := Creds{};
+func Initialize() (error, *Twil) {
+	creds := Cred{}
 
+	//Open Credentials file
 	credFile, err := os.Open("twilioAPI.json")
 	if err != nil {
 		fmt.Println("Error opening file")
+		return err, nil
 	}
-
+	// parse credentials
 	jsonParser := json.NewDecoder(credFile)
 	if err = jsonParser.Decode(&creds); err != nil {
 		fmt.Println("Error parsing file")
+		return err, nil
 	}
-	fmt.Printf("%+v", creds);
 
-	twilio := gotwilio.NewTwilioClient(creds.Sid, creds.Auth)
+	//Create struct
+	twil := Twil{creds, http.DefaultClient}
 
-	to := "+14254175393"
+	return nil, &twil
 
-	message := "Hello world!"
+}
 
-	twilio.SendMMS(From, to, message, LeftShark, "", "")
+func (twil *Twil) GetTexts() (error, []TwilData) {
+	resp, err := twil.HTTP.Get(apiURL + "Accounts/" + twil.Creds.Sid + "/Message");
+	fmt.Println("Response: ");
+	fmt.Println(resp.Body);
+	return err, nil
+}
+
+func (twil *Twil) SendText(data TwilData) {
+	return
 }
