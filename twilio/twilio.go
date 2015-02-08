@@ -22,7 +22,7 @@ type Twil struct {
 }
 
 type TwilData struct {
-	PhoneNum, InMessage, OutMessage, MediaURL string,
+	PhoneNum, InMessage, OutMessage, MediaURL string
 	Error bool
 }
 
