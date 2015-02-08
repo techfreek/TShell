@@ -19,16 +19,13 @@ var no = [11]string {"curl", "wget", "rm", "pwd", "chroot", "apt-get", "dpkg", "
 func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilData, toTwilio chan<-Twilio.TwilData) {
     toOperate := <-fromTwilio 
     cleanedMessage := toOperate.InMessage
-    if !cleanMessage(cleanedMessage) {
-        toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg" //sets shark
-        toTwilio <- toOperate //unsafe message, return to send back, no chance of running command
-    } else if checkSpecial(cleanedMessage) {
+    if !cleanMessage(cleanedMessage) || checkSpecial(cleanedMessage) {
         if strings.Contains("Go Cougs!", cleanedMessage) {
-            toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
+            toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg" //sets shark
         } else {
             toOperate.MediaURL = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
         }
-        toTwilio <- toOperate
+        toTwilio <- toOperate //unsafe message, return to send back, no chance of running command
     } else {
     toOperate.InMessage = cleanedMessage
     toProcess <- toOperate

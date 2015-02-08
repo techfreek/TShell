@@ -17,13 +17,8 @@ func RunProcess(FromSterilizer <-chan Twilio.TwilData, ToTwilio chan<- Twilio.Tw
     toOperate := <- FromSterilizer
     commandString := toOperate.InMessage
     cmd := exec.Command("bash", "-c", commandString)
-    out, err := cmd.Output()
-    if err != nil {
-        panic(err)
-        //toOperate.OutMessage = (string(err))
-    } else {
-        toOperate.OutMessage = (string(out)) //assumes the output is good, should crash before this otherwise
-    }
+    out,_ := cmd.CombinedOutput()
+    toOperate.OutMessage = (string(out)) //assumes the output is good, should crash before this otherwise
 
     ToTwilio <- toOperate
 }

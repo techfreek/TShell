@@ -21,7 +21,7 @@ func main() {
     //fmt.Printf("Hello world\n")
     log.Info("Hello world")
 
-    fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "ls"}
+    fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "Go Cougs!"}
 
     //fmt.Println(fakeData)
 
