@@ -24,19 +24,19 @@ func main() {
 
     //fmt.Println(fakeData)
     
-    hand := make(chan Twilio.TwilData, 5)
+    hand := make(chan Twilio.TwilData, 5)*/
     demo := make(chan Twilio.TwilData, 5)
-
+/*
     demo <- fakeData
 
     go Sterilizer.Sterlhand(demo, hand)*/
    
     //fmt.Println(<-hand)
 
-    anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"}
+    //anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg", false}
 
-    _, twil := Twilio.Initialize()
-   twil.SendText(anotherFake);
+    Twilio.Initialize(demo)
+   //twil.SendText(anotherFake);
 
 }
 
