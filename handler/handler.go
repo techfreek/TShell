@@ -4,24 +4,31 @@
 
 package TwitHandler
 
+//type datacontainer struct {
+//    phoneNum string
+//    inMessage string
+//    outMessage string
+//}
+
 //import(
-    //"fmt"
+//    "TwitterShell/main"
 //)
 
-func ping(pings chan<- string, msg string) {
-    pings <- msg
-}
-
 //Normally blocking sterlization main function
-func sterlhand (toProcess chan<- string, fromTwilio <-chan string) {
-    msg := <-fromTwilio
-    toProcess <- msg
+func Sterlhand(toProcess chan<- Datacontainer, fromTwilio <-chan Datacontainer) {
+    toOperate := <-fromTwilio
+    cleanedMessage := toOperate.inMessage
+    cleanMessage(&cleanedMessage) //clean the message here
+    toOperate.inMessage = cleanedMessage
+    toProcess <- toOperate
 
-//save out message from the incoming struct
 //process against known unacceptable commands (? gut out appended commands (such as with && and |?)
-//if message is clean/cleaned, remove original message and put new clean/cleaned instruction that was operated on
-//send to toProcess
-
 }
 
+//performs the sterlizing of the message
+func cleanMessage(message *string) {
+    //oldMessage := *message
+    newMessage := "NEW Message :)"
+    *message = newMessage
+}
 
