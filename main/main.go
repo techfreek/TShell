@@ -1,8 +1,8 @@
 package main
 
 import (
-    "fmt"
-    "TwitterShell/handler" //Sterilizer
+    //"fmt"
+   // "TwitterShell/handler" //Sterilizer
     "TwitterShell/twilio" //Twilio
     "github.com/op/go-logging"
 )
@@ -17,24 +17,26 @@ func main() {
     //initializes the twilio send/receive function
     //initializes the handler sterlizer function
     //initializes the process function
-    fmt.Printf("Hello world\n")
+    /*fmt.Printf("Hello world\n")
     log.Info("Hello world")
 
     fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "I like trains!"}
 
-    fmt.Println(fakeData)
+    //fmt.Println(fakeData)
     
     hand := make(chan Twilio.TwilData, 5)
     demo := make(chan Twilio.TwilData, 5)
 
     demo <- fakeData
 
-    go Sterilizer.Sterlhand(demo, hand)
+    go Sterilizer.Sterlhand(demo, hand)*/
    
-    fmt.Println(<-hand)
+    //fmt.Println(<-hand)
+
+    anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"}
 
     _, twil := Twilio.Initialize()
-   twil.GetTexts();
+   twil.SendText(anotherFake);
 
 }
 
