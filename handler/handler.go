@@ -8,13 +8,15 @@
 package Sterilizer
 
 import(
-    "fmt"
+    //"fmt"
     "TwitterShell/twilio"
     "strings"
     "math/rand"
 )
 
-var no = [12]string {"curl", "wget", "rm", "passwd", "chroot", "apt-get", "dpkg", "rmp", "sudo", "su", "chmod", "hexdump"}
+var no = [18]string {"curl", "wget", "rm ", "passwd", "chroot", "apt-get", "dpkg", "rmp", "sudo", 
+	"su", "chmod", "hexdump", ":(){:|:&};:", "/dev/sda", "/dev/null", "dd ", "mkfs", "char esp[] __attribute__ ((section(\".text\")))"}
+
 var leftsharks = [6]string {
 	"http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg",
 	"http://rack.0.mshcdn.com/media/ZgkyMDE1LzAyLzAzLzk4L2xlZnRzaGFya2luLjdhMWJjLmpwZwpwCXRodW1iCTk1MHg1MzQjCmUJanBn/50c64a3c/04e/leftsharkindiegogo.jpg",
@@ -26,16 +28,18 @@ var leftsharks = [6]string {
 //Normally blocking sterlization main function
 func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilData, toTwilio chan<-Twilio.TwilData) {
     for toOperate :=  range fromTwilio {
-        fmt.Printf("toOperate: %v\n", toOperate)
+        //fmt.Printf("toOperate: %v\n", toOperate)
 	    cleanedMessage := toOperate.InMessage
 	    if !cleanMessage(cleanedMessage) || checkSpecial(cleanedMessage) {
 	        if strings.Contains("Go Cougs!", cleanedMessage) {
 	            toOperate.MediaURL = "http://hackathon.eecs.wsu.edu/images/cougar_logo.png" //sets hackathon image
-	        } else {
+	        } else if strings.Contains("Hackathon", cleanedMessage) {
+	        	toOperate.MediaURL = "http://hackathon.eecs.wsu.edu/hosted_images/hackathon_03/sticker.jpg" //sets hackathon image
+	    	} else {
 	        	i := rand.Int() % len(leftsharks)
 	        	toOperate.MediaURL = leftsharks[i]
 	        }
-	        fmt.Printf("toTwilio <- %v \n", toOperate)
+	        //fmt.Printf("toTwilio <- %v \n", toOperate)
 	        toTwilio <- toOperate //unsafe message, return to send back, no chance of running command
 	    } else {
 		    toOperate.InMessage = cleanedMessage
@@ -59,7 +63,7 @@ func cleanMessage(message string) bool{
 
 func checkSpecial(message string) bool {
     //check for "Go Cougs!" and "Left Shark"
-    if strings.Contains("Go Cougs!", message) || strings.Contains("LShark", message) {
+    if strings.Contains("Go Cougs!", message) || strings.Contains("LShark", message) || strings.Contains("Hackathon", message) {
         return true
     }
     return false

@@ -5,8 +5,8 @@ import (
 	"TwitterShell/handler" //Sterilizer
 	"TwitterShell/twilio" //Twilio
 	"TwitterShell/process" //CmdProcessor
-	"github.com/op/go-logging"
 	"net/http"
+	"github.com/op/go-logging"
 )
 
 var log = logging.MustGetLogger("TShell")
@@ -14,13 +14,12 @@ var format = logging.MustStringFormatter(
 	"%{color}%{time:15:04:05.000} %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}",
 )
 
-
 func main() {
 	//should wait until Twilio gets something
 	//spawns off the workers
 	//Twilio goes back to listening until it gets the message to send back
 	//fmt.Printf("Hello world\n")
-	log.Info("Hello world")
+	//log.Info("Hello world")
 
 	//fakeData := Twilio.TwilData{PhoneNum: "555-555-5555", InMessage: "Go Cougs!"}
 
@@ -32,6 +31,8 @@ func main() {
 
 	Twilio.Initialize(demo)
 	//demo <- fakeData
+
+	log.Info("System Initialized")
 
 	go Sterilizer.Sterlhand(demo, hand, final)
 	go CmdProcessor.RunProcess(hand, final)

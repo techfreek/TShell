@@ -8,7 +8,13 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"github.com/op/go-logging"
 	//"io"
+)
+
+var log = logging.MustGetLogger("TShell")
+var format = logging.MustStringFormatter(
+	"%{color}%{time:15:04:05.000} %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}",
 )
 
 type Cred struct {
@@ -62,18 +68,18 @@ func Initialize(proc chan TwilData) error {
 }
 
 func SendText(toTwilio <-chan TwilData) {
-	fmt.Println("SendText()")
+	//fmt.Println("SendText()")
 	for data := range toTwilio {	
-		fmt.Println("Sending text")
+		//fmt.Println("Sending text")
 		values := Valueify(data)
 		encodedValues := values.Encode()
 		uri := apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json?" + encodedValues
-		fmt.Println("Uri: " + uri);
+		//fmt.Println("Uri: " + uri);
 		
 
 		req, err := http.NewRequest("POST", uri, strings.NewReader(values.Encode()))
 
-		fmt.Println("Values: " + values.Encode())
+		//fmt.Println("Values: " + values.Encode())
 
 		if err != nil {
 			fmt.Println("Error creating request");
@@ -83,9 +89,11 @@ func SendText(toTwilio <-chan TwilData) {
 		req.SetBasicAuth(twil.Creds.Sid, twil.Creds.Auth)
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-		fmt.Printf("Sending text: %v\n", data)
+		log.Info("[%s] Reply sent", data.PhoneNum)
+
+		//fmt.Printf("Sending text: %v\n", data)
 		_, err = twil.HTTP.Do(req)
-		fmt.Printf("Text sent: %s\n", data.PhoneNum)
+		//fmt.Printf("Text sent: %s\n", data.PhoneNum)
 
 		if err != nil {
 			fmt.Println("Error sending request: ")
@@ -109,7 +117,7 @@ func Valueify(data TwilData) url.Values {
 	
 	form.Set("ApplicationSid", twil.Creds.Sid)
 
-	fmt.Printf("Values: %v\n", form)
+	//fmt.Printf("Values: %v\n", form)
 
 	return form
 }
@@ -123,6 +131,8 @@ func GotText(res http.ResponseWriter, req *http.Request) {
 		Error: false,
 	}
 
-	fmt.Printf("processing <- %v", msg)
+	log.Info("[%s] Request for: %s", msg.PhoneNum, msg.InMessage)
+
+	//fmt.Printf("processing <- %v", msg)
 	processing <- msg
 }

@@ -4,7 +4,7 @@ package CmdProcessor
 import(
     //"io/ioutil"
 	"strings"
-	"fmt"
+	//"fmt"
     "os/exec"
     "TwitterShell/twilio" //Twilio, Twilio.TwilData
 )
@@ -24,7 +24,7 @@ func RunProcess(FromSterilizer <-chan Twilio.TwilData, ToTwilio chan<- Twilio.Tw
 
 	    toOperate.OutMessage = strings.TrimSuffix(toOperate.OutMessage, "\n")
 
-	    fmt.Printf("toOperate: '%v'", toOperate)
+	    //fmt.Printf("toOperate: '%v'", toOperate)
 	    ToTwilio <- toOperate
 	}
 }
