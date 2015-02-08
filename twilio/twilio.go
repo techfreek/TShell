@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
     "net/http"
+    "io/ioutil"
 )
 
 type Cred struct {
@@ -50,10 +51,27 @@ func Initialize() (error, *Twil) {
 }
 
 func (twil *Twil) GetTexts() (error, []TwilData) {
-	resp, err := twil.HTTP.Get(apiURL + "Accounts/" + twil.Creds.Sid + "/Message");
-	fmt.Println("Response: ");
-	fmt.Println(resp.Body);
-	return err, nil
+	resp, err := twil.HTTP.Get(apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json")
+	
+	if err != nil {
+		fmt.Println("Error requesting texts")
+		return err, nil
+	} else {
+		defer resp.Body.Close();
+		var contents string
+		jsonParser := json.NewDecoder(resp.Body);
+		jsonParser.Decode(&contents);
+		fmt.Println(contents);
+		contents, err := ioutil.ReadAll(resp.Body);
+		if err != nil {
+			fmt.Println("Error reading body")
+			return err, nil
+		}
+
+		fmt.Println("Response: ");
+		
+		return err, nil	
+	}
 }
 
 func (twil *Twil) SendText(data TwilData) {

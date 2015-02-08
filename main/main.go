@@ -15,8 +15,6 @@ var format = logging.MustStringFormatter(
 
 
 func main() {
-
-
     //initializes the twilio send/receive function
     //initializes the handler sterlizer function
     //initializes the process function
