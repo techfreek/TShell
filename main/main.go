@@ -5,7 +5,7 @@ import (
     "TwitterShell/handler" //this would be used as TwitHandler
 )
 
-type Datacontainer struct {
+var Datacontainer struct {
     phoneNum string
     inMessage string
     outMessage string

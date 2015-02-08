@@ -4,18 +4,12 @@
 
 package TwitHandler
 
-//type datacontainer struct {
-//    phoneNum string
-//    inMessage string
-//    outMessage string
-//}
-
-//import(
-//    "TwitterShell/main"
-//)
+import(
+    "TwitterShell/main"
+)
 
 //Normally blocking sterlization main function
-func Sterlhand(toProcess chan<- Datacontainer, fromTwilio <-chan Datacontainer) {
+func Sterlhand(toProcess chan<- TwilData, fromTwilio <-chan TwilData) {
     toOperate := <-fromTwilio
     cleanedMessage := toOperate.inMessage
     cleanMessage(&cleanedMessage) //clean the message here
