@@ -2,11 +2,16 @@
 //Accepts a map from the Twilio input/output handler that contains the submitting number/user [should be occupied],
 //      the message from the user to be sterlized, and an empty response storage element
 
+//Change Log
+//  6:13pm, Proof of concept works; can receive, modify, and send command on
+
 package Sterilizer
 
 import(
     "TwitterShell/twilio"
 )
+
+const no [11]string{"curl", "wget", "rm", "pwd", "chroot", "apt-get", "dpkg", "rmp", "sudo", "su", "chmod"}
 
 //Normally blocking sterlization main function
 func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilData) {
@@ -22,7 +27,7 @@ func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilDa
 //performs the sterlizing of the message
 func cleanMessage(message *string) {
     //oldMessage := *message
-    newMessage := "NEW Message :)"
+    newMessage := "pwd"
     *message = newMessage
 }
 

@@ -4,6 +4,7 @@ import (
     "fmt"
     "TwitterShell/handler" //Sterilizer
     "TwitterShell/twilio" //Twilio
+    "TwitterShell/process" //CmdProcessor
     "github.com/op/go-logging"
 )
 
@@ -28,15 +29,19 @@ func main() {
     
     hand := make(chan Twilio.TwilData, 5)
     demo := make(chan Twilio.TwilData, 5)
+    final := make(chan Twilio.TwilData, 5)
 
     demo <- fakeData
 
     go Sterilizer.Sterlhand(demo, hand)
+    go CmdProcessor.RunProcess(hand, final)
+    
+    fmt.Println("Stuff here")
    
-    fmt.Println(<-hand)
+    fmt.Println(<-final)
 
-    _, twil := Twilio.Initialize()
-   twil.GetTexts();
+    //_, twil := Twilio.Initialize()
+    //twil.GetTexts();
 
 }
 
