@@ -35,5 +35,8 @@ func main() {
    
     fmt.Println(<-hand)
 
+    _, twil := Twilio.Initialize()
+   twil.GetTexts();
+
 }
 
