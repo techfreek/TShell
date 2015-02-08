@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-type cred struct {
+type Cred struct {
 	Sid string
 	Auth string
 } 
@@ -32,6 +32,8 @@ var From = "+15012297152"
 var apiURL = "https://api.twilio.com/2010-04-01"
 
 func Initialize() {
+	creds := Creds{};
+
 	credFile, err := os.Open("twilioAPI.json")
 	if err != nil {
 		fmt.Println("Error opening file")
