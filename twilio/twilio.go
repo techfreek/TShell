@@ -29,21 +29,15 @@ type TwilData struct {
 	Error bool
 }
 
-type twilText struct {
-	MessageSid string 		`json:"MessageSid"`
-	SmsSid string 			`json:"SmsSid"`
-	AccountSid string 		`json:"AccountSid"`
-	From string 			`json:"From"`
-	To string 				`json:"To"`
-	Body string 			`json:"Body"`
-	NumMedia string 		`json:"NumMedia"`
-}
-
-
 var LeftShark = "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"
 var From = "+15012297152"
 var apiURL = "https://api.twilio.com/2010-04-01/"
 var processing = make(chan TwilData)
+
+//start server so we can get texts
+var mux = http.NewServeMux()
+mux.HandleFunc("/", gotText)
+http.ListenAndServe(":8000", mux)
 
 func Initialize(proc chan TwilData) (error, *Twil) {
 	//Set the channel where texts are sent to be processed
@@ -68,17 +62,11 @@ func Initialize(proc chan TwilData) (error, *Twil) {
 	//Create struct
 	twil := Twil{creds, http.DefaultClient}
 
-
-	//start server so we can get texts
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", gotText)
-	http.ListenAndServe(":8000", mux)
-
-
 	return nil, &twil
 }
 
 func (twil *Twil) SendText(data TwilData) {
+	fmt.Println("Sending text");
 	values := Valueify(data, twil)
 	url := apiURL + "Accounts/" + twil.Creds.Sid + "/Messages.json"
 	fmt.Println("Url: " + url);
@@ -128,37 +116,15 @@ func Valueify(data TwilData, twil *Twil) url.Values {
 func gotText(res http.ResponseWriter, req *http.Request) {
 	defer io.WriteString(res, "ACK")
 
-	//Create a decoder for the request
-	decoder := json.NewDecoder(req.Body)
-
-	//instantiate empty TwilText
-	text := twilText{}
-
-	if err := decoder.Decode(&text); err != nil {
-		if err != nil {
-			fmt.Printf("Error parsing text: %v", err)
-		}
-	}
-
-	parsedText, err := json.Marshal(req.Form)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-	}
-
-	fmt.Println(string(parsedText))
-
-	/*fmt.Printf("twilText: %s %s %s\n", text.To, text.Body, text.From);
-	fmt.Println(text);
-
 	msg := TwilData{
-		PhoneNum: text.To,
-		InMessage: text.Body,
+		PhoneNum: req.FormValue("From"),
+		InMessage: req.FormValue("Body"),
 		OutMessage: "",
 		MediaURL: "",
 		Error: false,
 	}
 
-	fmt.Printf("msg: %s %s %s %s %t\n", msg.PhoneNum, msg.InMessage, msg.OutMessage, msg.MediaURL, msg.Error)*/
+	fmt.Println(msg)
 
-	//processing <- msg
+	processing <- msg
 }

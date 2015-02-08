@@ -29,6 +29,12 @@ func main() {
     demo := make(chan Twilio.TwilData, 5)
     final := make(chan Twilio.TwilData, 5)
 
+   anotherFake := Twilio.TwilData{PhoneNum: "+14254175393", InMessage: "Go Cougs!", OutMessage: "Hackathon FTW", MediaURL: "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg", Error: false}
+
+   fmt.Println("About to Initialize")
+    _, twil := Twilio.Initialize(demo)
+    fmt.Println("Done Initializing")
+    twil.SendText(anotherFake);
     demo <- fakeData
 
     go Sterilizer.Sterlhand(demo, hand, final)
@@ -37,12 +43,6 @@ func main() {
     
     fmt.Println(<-final)
 
-    //anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg", false}
 
-    Twilio.Initialize(demo)
-   //twil.SendText(anotherFake);
-    //anotherFake := Twilio.TwilData{"+14254175393", "Go Cougs!", "Hackathon FTW", "http://pbs.twimg.com/media/B80Q0_3CIAAWy90.jpg"}
-
-    //_, twil := Twilio.Initialize()
-    //twil.SendText(anotherFake);
+    
 }
