@@ -9,7 +9,6 @@ import (
     "net/url"
     "strings"
     "io"
-    //"io/ioutil"
 )
 
 type Cred struct {

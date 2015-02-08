@@ -15,3 +15,4 @@ Things to block:
     thoughts on foreign characters?
     Prevent supplying the internal and external IP of the reponse system
     No process checking (aka top like commands)
+    Prevent changing the shell
