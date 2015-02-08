@@ -36,8 +36,8 @@ var processing = make(chan TwilData)
 
 //start server so we can get texts
 var mux = http.NewServeMux()
-mux.HandleFunc("/", gotText)
-http.ListenAndServe(":8000", mux)
+//mux.HandleFunc("/", gotText)
+//http.ListenAndServe(":8000", mux)
 
 func Initialize(proc chan TwilData) (error, *Twil) {
 	//Set the channel where texts are sent to be processed
