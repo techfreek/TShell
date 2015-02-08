@@ -2,15 +2,15 @@
 //Accepts a map from the Twilio input/output handler that contains the submitting number/user [should be occupied],
 //      the message from the user to be sterlized, and an empty response storage element
 
-package TwitHandler
+package Sterilizer
 
 import(
     "TwitterShell/twilio"
 )
 
 //Normally blocking sterlization main function
-func Sterlhand(toProcess chan<- Twilio.TwilData, fromTwilio <-chan Twilio.TwilData) {
-    toOperate := <-fromTwilio
+func Sterlhand(fromTwilio <-chan Twilio.TwilData, toProcess chan<- Twilio.TwilData) {
+    toOperate := <-fromTwilio 
     cleanedMessage := toOperate.InMessage
     cleanMessage(&cleanedMessage) //clean the message here
     toOperate.InMessage = cleanedMessage
